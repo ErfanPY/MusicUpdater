@@ -1,0 +1,7 @@
+.vscode
+
+*.swp
+
+output.txt
+profile.txt
+update_list.txt
