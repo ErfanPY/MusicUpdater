@@ -1,14 +1,4 @@
-import os
-import re
-import io
-import time
-import argparse
-import urllib.parse
-
-import requests
-from bs4 import BeautifulSoup as bs
-
-import extra
+from extra import *
 
 #profile file contains data of musicplayers and url to 
 #[["name", "url"], ["name", "url"], ["name", "url"]]

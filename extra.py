@@ -1,3 +1,14 @@
+import os
+import re
+import io
+import time
+import argparse
+import urllib.parse
+
+import requests
+from bs4 import BeautifulSoup as bs
+
+
 #functions [labtar:downloader(*soupMaker, *printProgressBar, *resume_download, *download_file),
 #           justsayname:(googleReq, getRightOneNum, *checkMusicLinks, siteDownload)]
 	
