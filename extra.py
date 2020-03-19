@@ -35,10 +35,11 @@ def get_music_links (url=None, html=None):
         return
     
     download_links = []
+	#TODO chose quality for music links
     for i in links :
         if i and ( '.zip' in i or '.rar' in i and not '128' in i):
             download_links.append(i)
-        elif i and '.mp3' in i and not '128' in i :
+        elif i and '.mp3' in i and '128' in i :
             download_links.append(i)
 
     return (download_links)
