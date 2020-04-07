@@ -1,8 +1,9 @@
 .vscode
 downloads/
 *.swp
+*.cpython-38.pyc
 .vs
-__pycache__
+__pycache__/
 
 output.txt
 profile.txt

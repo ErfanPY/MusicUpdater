@@ -24,10 +24,13 @@ def main ():
 			#TODO make a dict with keys = player_name and values =list of music_url
 			if music_name not in os.listdir("downloads") :
 				download_musics.append(music_url)
-	with open('output.txt', 'w') as file :
+				print(f'#ADED: {music_name}')
+
+	with open('output.txt', 'a') as file :
 		for link in download_musics:
 			file.write(str(link.encode()))
-
+	
+	print(f'[ {len(download_musics)} ] music aded. ')
 
 if __name__ == "__main__":
 	if len(sys.argv) >= 2:
