@@ -1,21 +1,27 @@
 from extra import (usage, get_music_links, get_input, os, argparse, sys)
 
-#profile file contains data of musicplayers and url to 
+#players file contains data of musicplayers and url to 
 #[["name", "url"], ["name", "url"], ["name", "url"]]
 
 def main ():
+	'''
+	Takes players name with a url to page of their music list from update_list.txt and 
+	 adds all mp3 files to output.txt 
+	'''
+	
 	if 'downloads' not in os.listdir():
 		os.mkdir('downloads')
-	profile = {}
+	players = {}
 	#TODO correct first line of rad (first line have some symbols wich shold be deleted)
+	
+	#Reads playesrs data from file and pu them in players dictionory
 	with open("update_list.txt")as file:
 		for line in file.readlines() :
 			name , url = line.split(':', maxsplit=1)
-			profile[name] = url
+			players[name] = url
 
 	download_musics = []
-	print(profile)
-	for player_name, player_url in profile.items() :
+	for player_name, player_url in players.items() :
 		print(f'checking for {player_name} musics')
 		musics = get_music_links(url = player_url)
 		for music_url in musics:
@@ -26,7 +32,7 @@ def main ():
 				download_musics.append(music_url)
 				print(f'#ADED: {music_name}')
 
-	with open('output.txt', 'a') as file :
+	with open('output.txt', 'w') as file :
 		for link in download_musics:
 			file.write(str(link.encode()))
 	
