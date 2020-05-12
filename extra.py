@@ -9,7 +9,6 @@ import urllib.parse
 import requests
 from bs4 import BeautifulSoup as bs
 
-
 #functions [labtar:downloader(*soupMaker, *printProgressBar, *resume_download, *download_file),
 #           justsayname:(googleReq, getRightOneNum, *checkMusicLinks, siteDownload)]
 	
@@ -64,11 +63,12 @@ def download_file(url, dir='download/', verbose=True):
 					if verbose : print_progress_bar(iter_num, total, prefix = 'Progress', suffix = 'Complete', length = 50)
 					f.flush()
 
-			filename = url.split('/')[-1]
+			filename = urllib.parse.unquote(url.split('/')[-1])
 			file_path = str(dir) + str(filename)
-			open(file_path, 'ab').write(f.getvalue())
+			with open(file_path, 'ab') as output:
+				output.write(f.getvalue())
 	end = time.time()
-	if verbose : print('##########{}##########'.format((end-start)))
+	if verbose : print(f'[*] Download taked {end-start} s\n')
 	return file_path
 
 def resume_download(fileurl, resume_byte_pos):

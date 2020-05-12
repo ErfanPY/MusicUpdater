@@ -1,7 +1,35 @@
-from extra import (usage, get_music_links, get_input, os, argparse, sys)
+from extra import (soup_maker usage, get_music_links, get_input, os, argparse, sys, download_file, urllib)
 
-#players file contains data of musicplayers and url to 
-#[["name", "url"], ["name", "url"], ["name", "url"]]
+def type_finder (url, file_format):
+	soup = soup_maker(url= url)
+    if soup :
+        links = [i.get('href') for i in soup.find_all('a')]
+    else :
+        return
+    
+    type_links = []
+	
+    for limk in links :
+        if link and file_format in link:
+            type_links.append(link)
+    
+	return (type_links)
+
+def search_for (base_url, file_format = 'mp3', depth = 0):
+	"""
+	search for a spesefic file_format in all page from base_url to all link in that page until reach the depth
+	@params:
+	base_url    - Required  : page to start searching (Str)
+	file_format - Optional  : type of file to search in pages (default = mp3) (Str)
+	depth       - Optional  : how much deep should search (default = 0) (Int)
+	"""
+	res = []
+
+	res.append(type_finder(base_url, file_format))
+	childs = type_finder(base_url)#TODO find html page from link of site
+	for child in childs:
+		res.append(search_for(child))#TODO search for in all link in this page for file types
+	return res
 
 def main ():
 	'''
@@ -16,7 +44,7 @@ def main ():
 	
 	#Reads playesrs data from file and pu them in players dictionory
 	with open("update_list.txt")as file:
-		for line in file.readlines() :
+		for   line in file.readlines() :
 			name , url = line.split(':', maxsplit=1)
 			players[name] = url
 
@@ -25,7 +53,7 @@ def main ():
 		print(f'checking for {player_name} musics')
 		musics = get_music_links(url = player_url)
 		for music_url in musics:
-			music_name = music_url.split('/')[-1]
+			music_name = urllib.parse.unquote(music_url.split('/')[-1])
 			#TODO better file search (may be downloaded from diffrent site) can cheack size or msuics meta data for pure music name
 			#TODO make a dict with keys = player_name and values =list of music_url
 			if music_name not in os.listdir("downloads") :
@@ -37,6 +65,10 @@ def main ():
 			file.write(str(link.encode()))
 	
 	print(f'[ {len(download_musics)} ] music aded. ')
+	if  download_musics and  input('Do you want to musics be dowloaded ? (y/n)').lower() == 'y':
+		for link in download_musics:
+			download_file(link, dir='downloads/', verbose=True)
+			print(f"[*] {link.split('/')[-1]} downloaded")
 
 if __name__ == "__main__":
 	if len(sys.argv) >= 2:
