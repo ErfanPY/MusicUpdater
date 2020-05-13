@@ -1,4 +1,4 @@
-
+import argparse
 def print_progress_bar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
 	"""
 	Call in a loop to create terminal progress bar
@@ -40,11 +40,10 @@ def get_input() :
 	link = args.link
 	quality = args.quality
 
-	if args.quality :
-		main()
-	else:
+	if not args.quality :
 		usage()
-
+	else :
+		return link, quality
 
 def usage():
     return """

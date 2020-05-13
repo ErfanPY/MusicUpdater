@@ -1,10 +1,14 @@
+.vs
 .vscode
-downloads/
+.google-cookie
 *.swp
 *.cpython-38.pyc
-.vs
 __pycache__/
 
+downloads/
+
+test*
+temp*
 output.txt
 profile.txt
 update_list.txt
