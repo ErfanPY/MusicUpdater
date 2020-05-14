@@ -11,6 +11,18 @@ from ui_tools import print_progress_bar
 #TODO search for a content is site (soup.select)(with css selector)
 #a = soup_maker('https://www.mtvpersian.net/artist/amir-tataloo/?mp3s=1').select('html body main div.wrapper a.artistpro b')
 
+def inc_exc_filter (text, includes, excludes):
+    '''
+    checks if all includes are in text and no one from excludes is in text
+    '''
+    for inc in includes:
+        if not inc in text:
+            return False
+    for exc in excludes:
+        if exc in text:
+            return False
+    return True
+
 def soup_maker(url=None, html=None):
 	#Make a soup obj from url or html file
 	#TODO error reporting
@@ -46,28 +58,39 @@ def type_finder (url: str, file_format: str) -> list:
 
 	return found_links
 
-def search_for (base_url: str, file_format: str, depth: int = 0, _far: int =0, _debug: bool =False) -> list:
+def search_for (base_url: str, file_format: str, depth: int = 0, includes: list =[], excludes: list =[], _far: int =0, _debug: bool =False) -> list:
 	"""
 	search for a spesefic file_format in all page from base_url to all link in that page until reach the depth
 	@params:
 	base_url    - Required  : page to start searching (Str)
 	file_format - Required  : type of file to search in pages (Str)
 	depth       - Optional  : how much deep should search (default = 0) (Int)
+	includes     - Optional  : list of words should be in result (default = []) (List)
+	excludes     - Optional  : list of words should not be in result (default = []) (List)
 	"""
-	res = list()
+	results = list()
 	if _debug : print(f"[*] {'-'*_far} fearching for [{file_format}] in \"{unquote(base_url)}\"")
 	#TODO make a tree of what pages we searched and show it in cli
-	[res.append(i) for i in type_finder(base_url, file_format) if i and not i in res]
+	#TODO add a max_page param to limitait the number of page search
+	#TODO add include exclude filter
+
+	for i in type_finder(base_url, file_format):
+		if i and not i in results:
+			results.append(i)
+
 	if depth > 0:
-		childs = type_finder(base_url, '')#matchs any link of any page
+		childs = type_finder(base_url, '')#matchs links to other pages (not files)
 		for child in childs:
-			[res.append(i) for i in search_for(child, '.mp3', depth-1, _far+1) if i and not i in res]
-	return res
+			[results.append(i) for i in search_for(child, '.mp3', depth-1, _far+1) if i and not i in res]
+	
+	results = [res for res in results if inc_exc_filter (res, includes, excludes)]
+
+	return results
 
 def download_file(url, dir='download/', verbose=True):
 	""" download file in specefic directory will log what do if verbose is True"""
 	start = time.time()
-	# NOTe the stream=True parameter below
+	#NOTE the stream=True parameter below
 
 	with requests.get(url, stream=True) as r:
 		r.raise_for_status()
