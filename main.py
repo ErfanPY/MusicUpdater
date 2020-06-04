@@ -1,5 +1,6 @@
 import os
 import re
+import json
 import urllib
 
 from web_crawl_tools import (soup_maker, download_file, search_for)
@@ -29,11 +30,14 @@ def main (players: dict) -> list:
 if __name__ == "__main__":
 	players = {}
 	#TODO correct first line of rad (first line have some symbols wich shold be deleted)
+	#TODO add update_method : takes a player name and searches google for playlist
+	 
 	#Reads players data from file and pu them in players dictionory
-	with open("update_list.txt") as file:
-		for line in file.readlines() :
-			name , url = line.split(':', maxsplit=1)
-			players[name] = url
+	with open('update_list.json') as f :
+		try:
+			players = json.load(f)
+		except json.decoder.JSONDecodeError :
+			players = {}
 	
 	download_links = main(players)
 	
