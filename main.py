@@ -2,6 +2,7 @@ import os
 import re
 import json
 import urllib
+import argparse
 
 from web_crawl_tools import (soup_maker, download_file, search_for)
 from ui_tools import (print_progress_bar, get_input)
@@ -16,12 +17,13 @@ def main_finder (players: dict) -> list:
 	
 	for player_name, player_url in players.items() :
 		print(f"-[*] CHECKING: [{player_name}] MUSICS ")
-		musics = search_for(player_url, '.mp3', depth = 0, excludes=['remix', '320'])
+		musics = search_for(player_url, '.mp3', depth = 1, excludes=['remix', '320'], _debug=True)
+
 		for music_url in musics:
 			music_name = urllib.parse.unquote(music_url.split('/')[-1])
 			#TODO better file search (may be downloaded from diffrent site) can cheack size or msuics meta data for pure music name
-			#TODO make a dict with keys = player_name and values =list of music_url
-			if music_name not in os.listdir("downloads") :
+			#TODO make a dict with keys = player_name and values = list of music_url
+			if music_name not in os.listdir("downloads"):
 				download_musics.append(music_url)
 				print(f'-[*] FOUND: music_num = {len(download_musics)} / name = {music_name}')
 	
@@ -29,9 +31,9 @@ def main_finder (players: dict) -> list:
 	
 if __name__ == "__main__":
 	players = {}
-	#TODO correct first line of rad (first line have some symbols wich shold be deleted)
+	#TODO correct first line of rad (update.txt first line have some symbols wich shold be deleted)
 	#TODO add update_method : takes a player name and searches google for playlist
-	#TODO get args to manage output . download links or save them . all/ none/ specified
+	#TODO argparse to manage output . download links or save them . all/ none/ specified
 	 
 	#Reads players data from file and pu them in players dictionory
 	with open('update_list.json') as f :
